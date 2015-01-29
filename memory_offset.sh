@@ -18,7 +18,7 @@
 # 
 
 _create_file(){
-	FILE=$(base64 /dev/urandom |head -c6)
+	FILE=$(base64 /dev/urandom |tr -d '+/'|head -c6)
 	FILE+='.c'
     printf "[+] %s created\n" "$FILE"
     echo -e "#include <stdio.h>\n\nvoid offset(void){\nchar small[17];\ngets(small);\n}\nint main(void){\noffset();\nreturn 0;\n}" > "$FILE"
