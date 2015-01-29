@@ -34,7 +34,7 @@ _compile_lame(){
 }
 
 _result(){
-	printf "[+] Memory offset => %s\n" "$1"
+    tput cup $X 0 ; printf "[+] Memory offset => %s\n" "$1"
 }
 
 _gdb_sub(){
@@ -59,6 +59,7 @@ _exit_clean(){
 ########## MAIN #############
 trap _exit_clean SIGINT SIGKILL
 _create_file
+printf '\033[6n';read -sdR X; X=${X#*[} ; X=${X%;*}
 echo "[+] Calcul in progress"
 C=0
 for size_array in {1..64}; do
