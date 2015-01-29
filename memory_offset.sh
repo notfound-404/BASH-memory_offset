@@ -57,6 +57,7 @@ _exit_clean(){
 }
 
 ########## MAIN #############
+clear
 trap _exit_clean SIGINT SIGKILL
 _create_file
 printf '\033[6n';read -sdR X; X=${X#*[} ; X=${X%;*}
