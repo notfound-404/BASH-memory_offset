@@ -18,19 +18,19 @@
 # 
 
 _create_file(){
-	FILE=$(base64 /dev/urandom |tr -d '+/'|head -c6)
-	FILE+='.c'
+    FILE=$(base64 /dev/urandom |tr -d '+/'|head -c6)
+    FILE+='.c'
     printf "[+] %s created\n" "$FILE"
     echo -e "#include <stdio.h>\n\nvoid offset(void){\nchar small[17];\ngets(small);\n}\nint main(void){\noffset();\nreturn 0;\n}" > "$FILE"
 }
 
 _change_lame(){
-	local sizeOfArray="$1"
-	sed -ri 's/small\[.*\]/small\['"$sizeOfArray"'\]/' "$FILE"
+    local sizeOfArray="$1"
+    sed -ri 's/small\[.*\]/small\['"$sizeOfArray"'\]/' "$FILE"
 }
 
 _compile_lame(){
-	gcc -ggdb -fno-stack-protector -z execstack "$FILE" -o "${FILE%.*}" 2> /dev/null
+    gcc -ggdb -fno-stack-protector -z execstack "$FILE" -o "${FILE%.*}" 2> /dev/null
 }
 
 _result(){
@@ -38,16 +38,16 @@ _result(){
 }
 
 _gdb_sub(){
-	SUB=$(gdb ./"${FILE%.*}" <<< "disassemble offset" |awk '/sub/{print $4}')
-	[ -z "$FIRST_SUB" ] && \
-		 FIRST_SUB="$SUB" || { \
-			: $((C++))
+    SUB=$(gdb ./"${FILE%.*}" <<< "disassemble offset" |awk '/sub/{print $4}')
+    [ -z "$FIRST_SUB" ] && \
+         FIRST_SUB="$SUB" || { \
+            : $((C++))
             _result $C
-			[ "$FIRST_SUB" != "$SUB" ] && { \
+            [ "$FIRST_SUB" != "$SUB" ] && { \
                 _exit_clean
-			}
-		}
-	echo -n ''
+            }
+        }
+    echo -n ''
 }
 
 _exit_clean(){
@@ -64,7 +64,7 @@ printf '\033[6n';read -sdR X; X=${X#*[} ; X=${X%;*}
 echo "[+] Calcul in progress"
 C=0
 for size_array in {1..64}; do
-	_change_lame "$size_array"
-	_compile_lame
-	_gdb_sub "$size_array"
+    _change_lame "$size_array"
+    _compile_lame
+    _gdb_sub "$size_array"
 done
